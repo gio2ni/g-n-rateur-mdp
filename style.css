@@ -1,0 +1,256 @@
+/* ============================================================
+   GÉNÉRATEUR DE MOTS DE PASSE — style.css
+   BTS SIO SLAM
+   ============================================================ */
+
+/* --- Variables : toutes les couleurs centralisées ici ---
+   Changer une couleur ici la met à jour partout dans la page */
+:root {
+    --bg:       #f1f5f9;             /* Fond de la page */
+    --surface:  #ffffff;             /* Fond des cartes */
+    --surface2: #f8fafc;             /* Fond des champs internes */
+    --text:     #1e293b;             /* Texte principal */
+    --muted:    #64748b;             /* Texte secondaire (gris) */
+    --border:   #e2e8f0;             /* Couleur des bordures */
+    --accent:   #4f46e5;             /* Couleur principale (indigo) */
+    --accent-hv:#4338ca;             /* Indigo foncé au survol */
+    --accent-bg:rgba(79,70,229,0.08);/* Fond très léger indigo */
+    --shadow:   0 4px 6px rgba(0,0,0,0.05), 0 10px 30px rgba(0,0,0,0.08);
+    --radius:   12px;
+}
+
+/* --- Reset : supprime les marges par défaut du navigateur --- */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+/* --- Corps de la page : centré horizontalement --- */
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 1rem 4rem;
+    animation: fadeIn 0.4s ease; /* Animation d'apparition au chargement */
+}
+
+/* Animation : le contenu monte légèrement en apparaissant */
+@keyframes fadeIn {
+    from { opacity:0; transform:translateY(14px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+/* --- Conteneur central : limite la largeur à 540px --- */
+.container { width:100%; max-width:540px; display:flex; flex-direction:column; gap:1.25rem; }
+
+/* --- En-tête --- */
+.header { text-align:center; padding:0.75rem 0; }
+.header h1 { font-size:1.55rem; font-weight:700; letter-spacing:-0.02em; margin-bottom:0.3rem; }
+.subtitle { font-size:0.875rem; color:var(--muted); }
+
+/* --- Carte : boîte blanche avec ombre et coins arrondis --- */
+.card {
+    background: var(--surface);
+    border-radius:18px;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    padding:1.6rem;
+    display:flex;
+    flex-direction:column;
+    gap:1.25rem;
+}
+
+/* --- Zone d'affichage du mot de passe --- */
+.password-box {
+    display:flex; align-items:center; gap:0.5rem;
+    background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius);
+    padding:0.5rem 0.5rem 0.5rem 1rem;
+    transition:border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Bordure indigo quand un élément interne est actif (focus) */
+.password-box:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-bg); }
+
+/* Champ texte du mot de passe — transparent, police monospace */
+#password-output {
+    flex:1; background:none; border:none; outline:none;
+    color:var(--accent); font-family:'Consolas','Courier New',monospace;
+    font-size:1.05rem; font-weight:600; letter-spacing:0.05em;
+    min-width:0; transition:opacity 0.15s;
+}
+#password-output::placeholder { color:var(--muted); font-style:italic; font-weight:400; font-size:0.875rem; letter-spacing:0; }
+
+.password-controls { display:flex; gap:0.15rem; flex-shrink:0; }
+
+/* Boutons icônes (oeil + copier) */
+.btn-icon {
+    display:flex; align-items:center; justify-content:center;
+    width:36px; height:36px; background:none; border:none;
+    border-radius:8px; cursor:pointer; color:var(--muted);
+    transition:background 0.2s, color 0.2s;
+}
+.btn-icon:hover { background:var(--accent-bg); color:var(--accent); }
+
+/* --- Indicateur de force --- */
+.strength-section { display:flex; flex-direction:column; gap:0.5rem; }
+.strength-header { display:flex; justify-content:space-between; align-items:center; }
+.strength-label { font-size:0.75rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; }
+.strength-value { font-size:0.875rem; font-weight:700; transition:color 0.4s; } /* Couleur mise à jour par JS */
+
+/* Piste grise de la barre */
+.strength-track { height:6px; background:var(--surface2); border:1px solid var(--border); border-radius:99px; overflow:hidden; }
+
+/* Barre colorée — la classe (weak, medium...) est ajoutée par JavaScript */
+.strength-fill  { height:100%; width:0%; border-radius:99px; transition:width 0.5s ease, background-color 0.4s; }
+.strength-fill.weak        { width:25%;  background:#ef4444; } /* Rouge  */
+.strength-fill.medium      { width:50%;  background:#f59e0b; } /* Orange */
+.strength-fill.strong      { width:75%;  background:#22c55e; } /* Vert   */
+.strength-fill.very-strong { width:100%; background:#4f46e5; } /* Indigo */
+
+/* --- Blocs d'options (longueur + types) --- */
+.option-block { display:flex; flex-direction:column; gap:0.5rem; }
+.option-header { display:flex; justify-content:space-between; align-items:baseline; }
+.option-label { font-size:0.75rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; }
+.option-value { font-size:0.875rem; color:var(--muted); }
+.option-value strong { color:var(--accent); font-size:1rem; }
+
+/* --- Slider de longueur ---
+   -webkit-appearance:none permet de le styliser soi-même */
+.slider { width:100%; height:5px; -webkit-appearance:none; appearance:none; background:var(--border); border-radius:99px; outline:none; cursor:pointer; }
+
+/* Curseur (poignée) du slider — Chrome/Safari */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
+    background:var(--accent); border:3px solid var(--surface);
+    box-shadow:0 0 0 1px var(--accent); cursor:pointer; transition:transform 0.2s;
+}
+.slider::-webkit-slider-thumb:hover { transform:scale(1.2); }
+
+/* Curseur du slider — Firefox */
+.slider::-moz-range-thumb { width:20px; height:20px; border-radius:50%; background:var(--accent); border:3px solid var(--surface); cursor:pointer; }
+.slider-marks { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--muted); }
+
+/* --- Checkboxes personnalisées --- */
+.checkboxes { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+
+/* Carte cliquable de chaque option */
+.checkbox-item {
+    display:flex; align-items:center; gap:0.6rem;
+    padding:0.55rem 0.8rem; border:1px solid var(--border); border-radius:8px;
+    cursor:pointer; font-size:0.875rem; color:var(--muted); user-select:none;
+    transition:border-color 0.2s, background 0.2s, color 0.2s;
+}
+.checkbox-item:hover { border-color:var(--accent); color:var(--text); }
+
+/* :has(input:checked) = style appliqué quand la case est cochée */
+.checkbox-item:has(input:checked) { border-color:var(--accent); background:var(--accent-bg); color:var(--text); }
+
+/* On cache la checkbox native pour utiliser notre case visuelle */
+.checkbox-item input[type="checkbox"] { position:absolute; opacity:0; width:0; height:0; }
+
+/* Case à cocher visuelle (le petit carré) */
+.checkbox-box {
+    width:18px; height:18px; min-width:18px; border-radius:4px;
+    border:1.5px solid var(--border); background:var(--surface);
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.2s, border-color 0.2s; flex-shrink:0;
+}
+/* Case cochée : fond indigo */
+.checkbox-item:has(input:checked) .checkbox-box { background:var(--accent); border-color:var(--accent); }
+/* Coche blanche (trait CSS, pas un emoji) */
+.checkbox-item:has(input:checked) .checkbox-box::after {
+    content:''; display:block; width:5px; height:9px;
+    border:2px solid #fff; border-top:none; border-left:none;
+    transform:rotate(45deg) translateY(-1px);
+}
+
+/* --- Bouton "Générer" --- */
+.btn-primary {
+    padding:0.85rem; background:var(--accent); color:#fff;
+    border:none; border-radius:var(--radius); font-size:0.95rem; font-weight:600;
+    cursor:pointer; transition:background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover { background:var(--accent-hv); transform:translateY(-2px); box-shadow:0 6px 20px rgba(79,70,229,0.3); }
+.btn-primary:active { transform:translateY(0); box-shadow:none; }
+
+/* Animation au clic — classe ajoutée/retirée par JavaScript */
+@keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(0.97)} 100%{transform:scale(1)} }
+.btn-primary.animating { animation:pop 0.25s ease; }
+
+/* --- Historique --- */
+.history-header { display:flex; align-items:center; justify-content:space-between; }
+.history-title-group { display:flex; align-items:center; gap:0.5rem; }
+.history-title { font-size:0.95rem; font-weight:600; }
+.history-badge { font-size:0.75rem; color:var(--muted); background:var(--surface2); border:1px solid var(--border); padding:0.15rem 0.5rem; border-radius:99px; }
+
+/* Bouton "Tout effacer" */
+.btn-clear {
+    font-size:0.8rem; color:var(--muted); background:none;
+    border:1px solid var(--border); border-radius:7px; padding:0.3rem 0.7rem; cursor:pointer;
+    transition:color 0.2s, border-color 0.2s, background 0.2s;
+}
+.btn-clear:hover { color:#ef4444; border-color:#ef4444; background:rgba(239,68,68,0.06); }
+.btn-clear:disabled { opacity:0.35; cursor:not-allowed; pointer-events:none; }
+
+.history-empty { text-align:center; color:var(--muted); font-size:0.875rem; font-style:italic; padding:1.25rem 0; }
+
+/* Liste scrollable (max 280px de hauteur) */
+.history-list { display:flex; flex-direction:column; gap:0.4rem; max-height:280px; overflow-y:auto; }
+.history-list::-webkit-scrollbar { width:4px; }
+.history-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:99px; }
+
+/* Une ligne de l'historique */
+.history-item {
+    display:flex; align-items:center; gap:0.5rem;
+    padding:0.5rem 0.7rem; background:var(--surface2);
+    border:1px solid var(--border); border-radius:8px;
+    animation:slideIn 0.2s ease; transition:border-color 0.2s;
+}
+.history-item:hover { border-color:var(--accent); }
+
+/* Animation d'entrée de chaque ligne */
+@keyframes slideIn { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+
+.history-password { flex:1; font-family:'Consolas',monospace; font-size:0.8rem; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.history-actions { display:flex; gap:0.25rem; flex-shrink:0; }
+
+/* Bouton Copier dans l'historique */
+.history-btn-copy {
+    font-size:0.75rem; font-weight:500; color:var(--muted);
+    background:none; border:1px solid var(--border); border-radius:5px; padding:0.2rem 0.5rem; cursor:pointer;
+    transition:color 0.2s, border-color 0.2s, background 0.2s;
+}
+.history-btn-copy:hover { color:var(--accent); border-color:var(--accent); background:var(--accent-bg); }
+
+/* Bouton Supprimer (×) dans l'historique */
+.history-btn-delete {
+    width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+    font-size:1rem; color:var(--muted); background:none;
+    border:1px solid var(--border); border-radius:5px; cursor:pointer;
+    transition:color 0.2s, border-color 0.2s, background 0.2s;
+}
+.history-btn-delete:hover { color:#ef4444; border-color:#ef4444; background:rgba(239,68,68,0.06); }
+
+/* --- Toast (notification temporaire) ---
+   Caché par défaut, JS ajoute la classe "show" pour l'afficher */
+.toast {
+    position:fixed; bottom:1.75rem; left:50%;
+    transform:translateX(-50%) translateY(16px); opacity:0;
+    background:var(--text); color:#fff; font-size:0.875rem; font-weight:500;
+    padding:0.65rem 1.25rem; border-radius:99px; box-shadow:0 4px 20px rgba(0,0,0,0.2);
+    pointer-events:none; white-space:nowrap; z-index:9999;
+    transition:opacity 0.25s, transform 0.25s;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* --- Pied de page --- */
+.footer { text-align:center; color:var(--muted); font-size:0.75rem; opacity:0.65; }
+.footer code { background:var(--surface2); border:1px solid var(--border); padding:0.1rem 0.35rem; border-radius:4px; }
+
+/* --- Responsive mobile (< 480px) --- */
+@media (max-width:480px) {
+    body { padding:1rem 0.75rem 3rem; }
+    .header h1 { font-size:1.3rem; }
+    .card { padding:1.25rem; }
+    .checkboxes { grid-template-columns:1fr; } /* 1 colonne sur mobile */
+}
